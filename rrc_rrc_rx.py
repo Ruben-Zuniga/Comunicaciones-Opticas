@@ -175,7 +175,7 @@ plt.ylabel('Amplitude')
 plt.grid(True)
 plt.legend(title='Rolloff')
 
-plt.figure(figsize=(5,5))
+plt.figure(figsize=(6,5))
 
 for i in range(len(rolloff_v)):
     plt.plot(f/1e9, 20*np.log10(H_RRC[i]), linewidth=1.5, label=f'{np.round(rolloff_v[i], 2)}')
@@ -189,15 +189,15 @@ plt.legend(title='Rolloff')
 
 # Convolucion de dos filtros RRC
 
-plt.figure(figsize=(5,5))
+plt.figure(figsize=(6,5))
 plt.plot(n_rrc_v, h_rrc[2], '--k', linewidth=1)
 plt.plot(n_rc_v, h_rrc_rrc[2], 'r', linewidth=2)
 plt.plot(n_rc_v, h_rc[2], '--b', linewidth=1.5)
-plt.title('Rolloff Comparison')
+plt.title(r'$h_{RC}$ and $h_{RRC}$ Comparison')
 plt.xlabel('Samples')
 plt.ylabel('Amplitude')
 plt.grid(True)
-plt.legend(['hrrc','hrrc*hrrc','hrc'])
+plt.legend([r'$h_{RRC}$',r'$h_{RRC} \ast h_{RRC}$',r'$h_{RC}$'])
 plt.xlim([-20,20])
 
 plt.show()
