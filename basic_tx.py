@@ -38,15 +38,24 @@ def qammod(symbols, M):
     # m es la cantidad de niveles por eje (I y Q).
     # Para QAM cuadrada se cumple que M = m^2 (por ejemplo: 16-QAM → m=4).
     m = int(np.sqrt(M))
-    
+
     # Calcula la componente real (I) del símbolo:
     # symbols % m da la posición horizontal dentro de la grilla.
     # La expresión genera niveles igualmente espaciados: {-m+1, ..., m-1}.
-    re = 2*(symbols % m) - m + 1
+    # sym=0,1,2,3   sym%m=0,1,0,1   re=-1,1,-1,1
+    # sym=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 niv=0,1,2,3 x4 niv^niv>1=0,1,3,2 x4 re=-3,-1,3,1 x4
+    niv = (symbols % m)
+    re = 2 * (niv^(niv>>1)) - m + 1
+    # re = 2 * niv - m + 1
     
     # Calcula la componente imaginaria (Q):
     # symbols // m determina la fila vertical dentro de la grilla.
-    im = 2*(symbols // m) - m + 1
+    # sym=0,1,2,3   sym//m=0,0,1,1  im=-1,-1,1,1
+    # sym=0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15 niv=0x4,1x4,2x4,3x4 niv^niv>1=0x4,1x4,3x4,2x4
+    # im=-3x4,-1x4,3x4,1x4
+    niv = (symbols // m)
+    im = 2 * (niv^(niv>>1)) - m + 1
+    # im = 2 * niv - m + 1
     
     # Forma el símbolo complejo I + jQ .
     return (re + 1j*im) 
