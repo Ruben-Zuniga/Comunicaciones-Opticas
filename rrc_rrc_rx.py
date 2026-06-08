@@ -10,7 +10,6 @@ plt.close("all")
 
 BR = 32e9
 N = 4
-# rolloff = 0.1 # [0,1]
 rolloff_v = np.array([0, 0.2, 0.5, 1])
 h_taps = 101
 
@@ -54,14 +53,6 @@ def raised_cosine(fc, fs, rolloff_v, n_taps, t0=0):
 
         # print(h_m[i])
         # print(tn_v)
-
-        # # Evitar inf en tn_v = +1/(2*rolloff)
-        # idx = (n_taps - 1) // 2 + int(N / (2*rolloff_v[i]))
-        # h_m[i][idx] = np.pi/4 * np.sinc(1 / (2*rolloff_v[i]))
-        
-        # # Evitar inf en tn_v = -1/(2*rolloff)
-        # idx = (n_taps - 1) // 2 - int(N / (2*rolloff_v[i]))
-        # h_m[i][idx] = np.pi/4 * np.sinc(1 / (2*rolloff_v[i]))
 
         # Normalización
         h_m[i] = h_m[i] / np.sum(h_m[i])
@@ -110,19 +101,6 @@ def root_raised_cosine(fc, fs, rolloff_v, n_taps, t0=0):
         center = (n_taps - 1) // 2
         h_m[i][center] = (1 + rolloff_v[i] * (4/np.pi - 1))
 
-        # # Evitar inf en tn_v = +1/(4*rolloff)
-        # idx = (n_taps - 1) // 2 + int(N / (4*rolloff_v[i]))
-
-        # # print(idx, 1/(4*rolloff_v[i]))
-
-        # h_m[i][idx] = rolloff_v[i]/np.sqrt(2) * ((1 + 2/np.pi) * np.sin(np.pi / (4*rolloff_v[i])) \
-        #                                  + (1 - 2/np.pi) * np.cos(np.pi / (4*rolloff_v[i])))
-
-        # # Evitar inf en tn_v = -1/(4*rolloff)
-        # idx = (n_taps - 1) // 2 - int(N / (4*rolloff_v[i]))
-        # h_m[i][idx] = rolloff_v[i]/np.sqrt(2) * ((1 + 2/np.pi) * np.sin(np.pi / (4*rolloff_v[i])) \
-        #                                  + (1 - 2/np.pi) * np.cos(np.pi / (4*rolloff_v[i])))
-
         # Normalización
         h_m[i] = h_m[i] / np.sum(h_m[i])
 
@@ -164,7 +142,7 @@ for i in range(len(rolloff_v)):
     H_RC[i] = fftshift(np.abs(fft(h_rc[i], NFFT)))
 
 # -------------------------------------------------
-# PLOTS (idénticos)
+# PLOTS
 # -------------------------------------------------
 
 n_rrc_v = np.arange(-(h_taps-1)//2, (h_taps-1)//2 + 1)
@@ -182,15 +160,6 @@ plt.ylabel('Amplitude')
 plt.legend(title='Rolloff')
 plt.grid(True)
 plt.xlim([-30,30])
-
-# plt.plot(n_rrc_v, h_rrc[i], '--k', linewidth=1)
-# plt.plot(n_rc_v, h_rrc_rrc, 'r', linewidth=2)
-# plt.plot(n_rc_v, h_rc, '--b', linewidth=1.5)
-# plt.title('Rolloff Comparation')
-# plt.xlabel('Samples')
-# plt.ylabel('Amplitude')
-# plt.grid(True)
-# plt.legend(['hrrc','hrrc*hrrc','hrc'])
 
 # Magnitud de la respuesta en frecuencia de todas las respuestas al impulso
 
@@ -224,33 +193,11 @@ plt.figure(figsize=(5,5))
 plt.plot(n_rrc_v, h_rrc[2], '--k', linewidth=1)
 plt.plot(n_rc_v, h_rrc_rrc[2], 'r', linewidth=2)
 plt.plot(n_rc_v, h_rc[2], '--b', linewidth=1.5)
-plt.title('Rolloff Comparation')
+plt.title('Rolloff Comparison')
 plt.xlabel('Samples')
 plt.ylabel('Amplitude')
 plt.grid(True)
 plt.legend(['hrrc','hrrc*hrrc','hrc'])
 plt.xlim([-20,20])
-
-# plt.figure(figsize=(5,5))
-# plt.plot(f/1e9, H_RRC, '--k', linewidth=1)
-# plt.plot(f/1e9, H_RRC_RRC, 'r', linewidth=2)
-# plt.plot(f/1e9, H_RC, '--b', linewidth=1.5)
-# plt.axvline(BR/2/1e9, linestyle='--', color='k')
-# plt.title('Hrrc.Hrrc = Hrc')
-# plt.xlabel('Freq [GHz]')
-# plt.ylabel('Amplitude')
-# plt.grid(True)
-# plt.legend(['Hrrc','Hrrc.Hrrc','Hrc'])
-
-# plt.figure(figsize=(5,5))
-# plt.plot(f/1e9, 20*np.log10(H_RRC), '--k', linewidth=1)
-# plt.plot(f/1e9, 20*np.log10(H_RRC_RRC), 'r', linewidth=2)
-# plt.plot(f/1e9, 20*np.log10(H_RC), '--b', linewidth=1.5)
-# plt.axvline(BR/2/1e9, linestyle='--', color='k')
-# plt.title('Hrrc.Hrrc = Hrc')
-# plt.xlabel('Freq [GHz]')
-# plt.ylabel('Amplitude [dB]')
-# plt.grid(True)
-# plt.legend(['Hrrc','Hrrc.Hrrc','Hrc'])
 
 plt.show()
